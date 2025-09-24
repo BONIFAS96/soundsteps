@@ -17,7 +17,7 @@ SoundSteps is a hybrid educational platform combining voice-first IVR lessons wi
 
 2. **Clone and Setup**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/soundsteps.git
+   git clone https://github.com/Eli-Keli/soundsteps.git
    cd soundsteps
    
    # Backend setup

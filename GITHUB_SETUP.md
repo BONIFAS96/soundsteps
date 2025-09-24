@@ -14,7 +14,7 @@ gh auth login
 
 # Create the repository and push
 gh repo create soundsteps --public --description "Voice-first IVR educational platform with React Native companion app for visually impaired learners"
-git remote add origin https://github.com/YOUR_USERNAME/soundsteps.git
+git remote add origin https://github.com/Eli-Keli/soundsteps.git
 git push -u origin main
 ```
 
@@ -28,7 +28,7 @@ git push -u origin main
 
 3. **Connect and Push**:
 ```bash
-git remote add origin https://github.com/YOUR_USERNAME/soundsteps.git
+git remote add origin https://github.com/Eli-Keli/soundsteps.git
 git push -u origin main
 ```
 
@@ -229,9 +229,9 @@ We are committed to making participation in this project a harassment-free exper
 
 Add these badges to your README.md:
 ```markdown
-![Build Status](https://github.com/YOUR_USERNAME/soundsteps/workflows/CI%2FCD%20Pipeline/badge.svg)
-![License](https://img.shields.io/github/license/YOUR_USERNAME/soundsteps)
-![Contributors](https://img.shields.io/github/contributors/YOUR_USERNAME/soundsteps)
-![Issues](https://img.shields.io/github/issues/YOUR_USERNAME/soundsteps)
-![Stars](https://img.shields.io/github/stars/YOUR_USERNAME/soundsteps)
+![Build Status](https://github.com/Eli-Keli/soundsteps/workflows/CI%2FCD%20Pipeline/badge.svg)
+![License](https://img.shields.io/github/license/Eli-Keli/soundsteps)
+![Contributors](https://img.shields.io/github/contributors/Eli-Keli/soundsteps)
+![Issues](https://img.shields.io/github/issues/Eli-Keli/soundsteps)
+![Stars](https://img.shields.io/github/stars/Eli-Keli/soundsteps)
 ```
