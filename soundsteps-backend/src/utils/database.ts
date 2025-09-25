@@ -17,6 +17,8 @@ export async function initDatabase(): Promise<void> {
       email TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
       name TEXT NOT NULL,
+      phone TEXT,
+      school TEXT,
       role TEXT DEFAULT 'teacher',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -78,6 +80,18 @@ export async function initDatabase(): Promise<void> {
   `);
 
   console.log('📊 Database tables created/verified');
+
+  // Add migrations for new columns if they don't exist
+  try {
+    await db.exec(`
+      ALTER TABLE users ADD COLUMN phone TEXT;
+      ALTER TABLE users ADD COLUMN school TEXT;
+    `);
+    console.log('📊 Database migrations applied');
+  } catch (error) {
+    // Columns might already exist, ignore error
+    console.log('📊 Database already up to date');
+  }
 
   // Insert default lesson if not exists
   const existingLesson = await db.get('SELECT id FROM lessons WHERE id = ?', 'basic-addition-001');

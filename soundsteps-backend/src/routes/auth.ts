@@ -15,6 +15,8 @@ interface RegisterRequest {
   email: string;
   password: string;
   name: string;
+  phone?: string;
+  school?: string;
 }
 
 /**
@@ -63,14 +65,36 @@ router.post('/login', async (req: Request<{}, {}, LoginRequest>, res: Response) 
  */
 router.post('/register', async (req: Request<{}, {}, RegisterRequest>, res: Response) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, phone, school } = req.body;
 
     if (!email || !password || !name) {
       return res.status(400).json({ error: 'Email, password, and name are required' });
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    if (password.length < 8) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters' });
+    }
+
+    // Validate password strength
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ 
+        error: 'Password must contain at least one uppercase letter, lowercase letter, and number' 
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Please enter a valid email address' });
+    }
+
+    // Validate phone number if provided
+    if (phone) {
+      const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+      if (!phoneRegex.test(phone)) {
+        return res.status(400).json({ error: 'Please enter a valid phone number' });
+      }
     }
 
     const db = getDb();
@@ -86,8 +110,8 @@ router.post('/register', async (req: Request<{}, {}, RegisterRequest>, res: Resp
     const userId = uuidv4();
 
     await db.run(
-      'INSERT INTO users (id, email, password_hash, name, role) VALUES (?, ?, ?, ?, ?)',
-      userId, email, passwordHash, name, 'teacher'
+      'INSERT INTO users (id, email, password_hash, name, phone, school, role) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      userId, email, passwordHash, name, phone || null, school || null, 'teacher'
     );
 
     // Generate token
@@ -103,6 +127,8 @@ router.post('/register', async (req: Request<{}, {}, RegisterRequest>, res: Resp
         id: userId,
         email,
         name,
+        phone: phone || null,
+        school: school || null,
         role: 'teacher',
         createdAt: new Date().toISOString()
       }
