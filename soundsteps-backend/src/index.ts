@@ -62,7 +62,8 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 async function startServer() {
   try {
@@ -72,9 +73,14 @@ async function startServer() {
 
     // Start server
     server.listen(PORT, () => {
+      const displayUrl = BASE_URL.includes('.ngrok-free.app') 
+        ? BASE_URL 
+        : `${BASE_URL}:${PORT}`;
+      
       console.log(`🚀 SoundSteps backend running on http://localhost:${PORT}`);
+      console.log(`🌐 Public URL: ${displayUrl}`);
       console.log(`📱 Webhooks ready for Africa's Talking`);
-      console.log(`🔗 Base URL: ${process.env.BASE_URL || 'http://localhost:' + PORT}`);
+      console.log(`🔗 API Base URL: ${BASE_URL}`);
     });
 
     // Socket.IO connection handling
