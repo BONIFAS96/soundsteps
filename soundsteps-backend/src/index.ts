@@ -10,7 +10,9 @@ import { authMiddleware } from './utils/auth';
 import lessonsRouter from './routes/lessons';
 import sessionsRouter from './routes/sessions';
 import authRouter from './routes/auth';
+import demoRouter from './routes/demo';
 import { voiceRouter } from './routes/webhooks/voice';
+import { smsRouter } from './routes/sms';
 
 dotenv.config();
 
@@ -41,9 +43,15 @@ app.get('/health', (req, res) => {
 // Auth routes (public)
 app.use('/auth', authRouter);
 
+// Demo routes (public for testing)
+app.use('/demo', demoRouter);
+
 // API routes (protected)
 app.use('/lessons', authMiddleware, lessonsRouter);
 app.use('/sessions', authMiddleware, sessionsRouter);
+
+// SMS routes (public for webhooks)
+app.use('/sms', smsRouter);
 
 // Africa's Talking webhooks (public)
 app.use('/webhooks', voiceRouter);

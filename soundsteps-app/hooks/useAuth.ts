@@ -38,6 +38,16 @@ export const useAuth = () => {
         },
     });
 
+    // Registration mutation
+    const registerMutation = useMutation({
+        mutationFn: authAPI.register,
+        onSuccess: async (data) => {
+            await SecureStore.setItemAsync(CONFIG.STORAGE_KEYS.AUTH_TOKEN, data.token);
+            await SecureStore.setItemAsync(CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(data.user));
+            queryClient.setQueryData(['auth', 'user'], data.user);
+        },
+    });
+
     // Logout function
     const logout = async () => {
         await SecureStore.deleteItemAsync(CONFIG.STORAGE_KEYS.AUTH_TOKEN);
@@ -48,6 +58,17 @@ export const useAuth = () => {
 
     const login = (credentials: LoginCredentials) => {
         return loginMutation.mutateAsync(credentials);
+    };
+
+    const register = (registrationData: {
+        firstName: string;
+        lastName: string;
+        email: string;
+        phone: string;
+        school: string;
+        password: string;
+    }) => {
+        return registerMutation.mutateAsync(registrationData);
     };
 
     useEffect(() => {
@@ -62,8 +83,11 @@ export const useAuth = () => {
         isAuthenticated: !!user,
         isLoading: isInitializing || isLoading,
         isLoginLoading: loginMutation.isPending,
+        isRegisterLoading: registerMutation.isPending,
         loginError: loginMutation.error,
+        registerError: registerMutation.error,
         login,
+        register,
         logout,
     };
 };

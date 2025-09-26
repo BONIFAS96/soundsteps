@@ -7,7 +7,7 @@ import type {
     Lesson,
     Session,
     DashboardStats
-} from '../types';
+} from '@/types';
 
 // Create axios instance
 const api = axios.create({
@@ -48,124 +48,198 @@ api.interceptors.response.use(
 // API functions
 export const authAPI = {
     login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-        // TODO: Replace with actual API call
-        // Mock implementation for development
-        if (credentials.email === 'teacher@soundsteps.com' && credentials.password === 'password') {
-            const mockResponse: AuthResponse = {
-                token: 'mock_jwt_token_' + Date.now(),
-                user: {
-                    id: '1',
-                    email: credentials.email,
-                    name: 'Eli Teacher',
-                    role: 'teacher',
-                    createdAt: new Date().toISOString(),
-                },
-            };
-            return mockResponse;
+        try {
+            const response = await api.post(CONFIG.ENDPOINTS.LOGIN, credentials);
+            return response.data;
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                console.error('Login error response:', error.response.data);
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Login failed. Please try again.');
         }
-        throw new Error('Invalid credentials');
     },
+
+    register: async (registrationData: {
+        firstName: string;
+        lastName: string;
+        email: string;
+        phone: string;
+        school: string;
+        password: string;
+    }): Promise<AuthResponse> => {
+        try {
+            // Transform the registration data to match backend expectations
+            const backendData = {
+                email: registrationData.email,
+                password: registrationData.password,
+                name: `${registrationData.firstName} ${registrationData.lastName}`,
+                phone: registrationData.phone,
+                school: registrationData.school,
+            };
+
+            const response = await api.post(CONFIG.ENDPOINTS.REGISTER, backendData);
+            return response.data;
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Registration failed. Please try again.');
+        }
+    },
+};
+
+// Helper function to transform backend lesson data to frontend format
+const transformLessonData = (backendLesson: any): Lesson => {
+    return {
+        id: backendLesson.id,
+        title: backendLesson.title,
+        description: backendLesson.description || '',
+        durationSeconds: backendLesson.durationSeconds || backendLesson.duration || 0,
+        quiz: backendLesson.quiz || [], // TODO: Load quiz questions from separate endpoint
+        createdBy: backendLesson.createdBy || '',
+        createdAt: backendLesson.createdAt || new Date().toISOString(),
+        updatedAt: backendLesson.updatedAt || new Date().toISOString(),
+        isActive: backendLesson.isActive !== undefined ? backendLesson.isActive : true,
+    };
 };
 
 export const lessonsAPI = {
     getAll: async (): Promise<Lesson[]> => {
-        // TODO: Replace with actual API call
-        // Mock implementation
-        return [
-            {
-                id: '1',
-                title: 'Basic Addition',
-                description: 'Learn basic addition with numbers 1-10',
-                audioUrl: 'https://example.com/audio1.mp3',
-                duration: 180,
-                quiz: [
-                    {
-                        id: '1',
-                        question: 'What is 2 + 3?',
-                        options: ['4', '5', '6', '7'],
-                        correctAnswer: 1,
-                    },
-                    {
-                        id: '2',
-                        question: 'What is 7 + 2?',
-                        options: ['8', '9', '10', '11'],
-                        correctAnswer: 1,
-                    },
-                ],
-                createdBy: '1',
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                isActive: true,
-            },
-            {
-                id: '2',
-                title: 'Multiplication Basics',
-                description: 'Introduction to multiplication tables',
-                audioUrl: 'https://example.com/audio2.mp3',
-                duration: 200,
-                quiz: [
-                    {
-                        id: '3',
-                        question: 'What is 3 × 4?',
-                        options: ['10', '11', '12', '13'],
-                        correctAnswer: 2,
-                    },
-                ],
-                createdBy: '1',
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                isActive: true,
-            },
-        ];
+        try {
+            const response = await api.get(CONFIG.ENDPOINTS.LESSONS);
+            // Backend returns { lessons: [...] }, we need just the array
+            const lessonsData = response.data.lessons || response.data;
+            
+            // Transform each lesson to match frontend interface
+            return Array.isArray(lessonsData) 
+                ? lessonsData.map(transformLessonData)
+                : [];
+        } catch (error: any) {
+            console.error('Lessons API Error:', error);
+            if (error.code === 'ECONNREFUSED' || error.code === 'NETWORK_ERROR') {
+                throw new Error('Cannot connect to server. Please check if the backend is running.');
+            }
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Failed to fetch lessons. Please try again.');
+        }
     },
 
-    create: async (lessonData: Omit<Lesson, 'id' | 'createdAt' | 'updatedAt'>): Promise<Lesson> => {
-        // TODO: Replace with actual API call
-        const newLesson: Lesson = {
-            ...lessonData,
-            id: Date.now().toString(),
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-        };
-        return newLesson;
+    getById: async (lessonId: string): Promise<Lesson> => {
+        try {
+            const response = await api.get(`${CONFIG.ENDPOINTS.LESSONS}/${lessonId}`);
+            // Backend returns { lesson: {...} }, we need just the object
+            const lessonData = response.data.lesson || response.data;
+            return transformLessonData(lessonData);
+        } catch (error: any) {
+            console.error('Lesson API Error:', error);
+            if (error.code === 'ECONNREFUSED' || error.code === 'NETWORK_ERROR') {
+                throw new Error('Cannot connect to server. Please check if the backend is running.');
+            }
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Failed to fetch lesson. Please try again.');
+        }
+    },
+
+    create: async (lessonData: {
+        title: string;
+        description: string;
+        audioUrl?: string;
+        durationSeconds: number; // Match backend expectation
+        // Note: quiz functionality not implemented in backend yet
+    }): Promise<Lesson> => {
+        try {
+            const response = await api.post(CONFIG.ENDPOINTS.LESSONS, lessonData);
+            // Backend returns { lesson: {...} }, we need just the object
+            const backendLesson = response.data.lesson || response.data;
+            return transformLessonData(backendLesson);
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Failed to create lesson. Please try again.');
+        }
+    },
+
+    update: async (lessonId: string, lessonData: Partial<Lesson>): Promise<Lesson> => {
+        try {
+            const response = await api.put(`${CONFIG.ENDPOINTS.LESSONS}/${lessonId}`, lessonData);
+            // Backend returns { lesson: {...} }, we need just the object
+            const backendLesson = response.data.lesson || response.data;
+            return transformLessonData(backendLesson);
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Failed to update lesson. Please try again.');
+        }
+    },
+
+    delete: async (lessonId: string): Promise<void> => {
+        try {
+            await api.delete(`${CONFIG.ENDPOINTS.LESSONS}/${lessonId}`);
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Failed to delete lesson. Please try again.');
+        }
     },
 };
 
 export const sessionsAPI = {
     getAll: async (): Promise<Session[]> => {
-        // TODO: Replace with actual API call
-        return [
-            {
-                id: '1',
-                lessonId: '1',
-                userId: 'user1',
-                phoneNumber: '+254712345678',
-                startedAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-                status: 'active',
-            },
-            {
-                id: '2',
-                lessonId: '2',
-                userId: 'user2',
-                phoneNumber: '+254787654321',
-                startedAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-                completedAt: new Date(Date.now() - 1000 * 60 * 27).toISOString(),
-                quizScore: 85,
-                status: 'completed',
-            },
-        ];
+        try {
+            const response = await api.get(CONFIG.ENDPOINTS.SESSIONS);
+            return response.data;
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Failed to fetch sessions. Please try again.');
+        }
+    },
+
+    getById: async (sessionId: string): Promise<Session> => {
+        try {
+            const response = await api.get(`${CONFIG.ENDPOINTS.SESSIONS}/${sessionId}`);
+            return response.data;
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Failed to fetch session. Please try again.');
+        }
+    },
+
+    getStats: async (): Promise<DashboardStats> => {
+        try {
+            const response = await api.get(`${CONFIG.ENDPOINTS.SESSIONS}/stats`);
+            return response.data;
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Failed to fetch session statistics. Please try again.');
+        }
     },
 };
 
 export const dashboardAPI = {
     getStats: async (): Promise<DashboardStats> => {
-        // TODO: Replace with actual API call
-        return {
-            activeCalls: 12,
-            totalLessons: 24,
-            averageQuizScore: 78.5,
-            totalUsers: 156,
-        };
+        try {
+            // Use the sessions stats endpoint for dashboard data
+            return await sessionsAPI.getStats();
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error('Failed to fetch dashboard statistics. Please try again.');
+        }
     },
 };
 

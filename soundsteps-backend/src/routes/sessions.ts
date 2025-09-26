@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { getRecentSessions } from '../models/Session';
-import { makeCall } from '../utils/africasTalking';
+import { makeCall, sendLessonSummary, sendAirtimeReward } from '../utils/africasTalking';
 import { AuthRequest } from '../utils/auth';
 
 const router = express.Router();

@@ -27,7 +27,6 @@ export async function initDatabase(): Promise<void> {
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
       description TEXT,
-      audio_url TEXT,
       duration_seconds INTEGER,
       created_by TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

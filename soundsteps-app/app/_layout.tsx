@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-// import { useFrameworkReady } from '@/hooks/useFrameworkReady';
+import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useTheme } from '@/hooks/useTheme';
 
 const queryClient = new QueryClient({
@@ -17,16 +17,18 @@ const queryClient = new QueryClient({
 
 
 function RootLayoutContent() {
-    // useFrameworkReady();
+    useFrameworkReady();
     const { isDarkMode } = useTheme();
 
     return (
         <SafeAreaProvider>
             <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="index" />
+                <Stack.Screen name="login" />
+                <Stack.Screen name="register-user" options={{ presentation: 'modal' }} />
                 <Stack.Screen name="dashboard" />
-                <Stack.Screen name="lessons/index" />
-                <Stack.Screen name="lessons/new" />
+                <Stack.Screen name="lessons" />
+                <Stack.Screen name="new-lesson" options={{ presentation: 'modal' }} />
             </Stack>
             <StatusBar style={isDarkMode ? 'light' : 'dark'} />
         </SafeAreaProvider>
@@ -34,7 +36,7 @@ function RootLayoutContent() {
 }
 
 export default function RootLayout() {
-    // useFrameworkReady();
+    useFrameworkReady();
     return (
         <QueryClientProvider client={queryClient}>
             <RootLayoutContent />

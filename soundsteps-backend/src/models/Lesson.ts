@@ -4,7 +4,6 @@ export interface Lesson {
   id: string;
   title: string;
   description?: string;
-  audioUrl?: string;
   durationSeconds?: number;
   createdBy?: string;
   createdAt?: Date;
@@ -21,7 +20,6 @@ export async function getLessonById(id: string): Promise<Lesson | null> {
     id: row.id,
     title: row.title,
     description: row.description,
-    audioUrl: row.audio_url,
     durationSeconds: row.duration_seconds,
     createdBy: row.created_by,
     createdAt: new Date(row.created_at),
@@ -37,7 +35,6 @@ export async function getAllLessons(): Promise<Lesson[]> {
     id: row.id,
     title: row.title,
     description: row.description,
-    audioUrl: row.audio_url,
     durationSeconds: row.duration_seconds,
     createdBy: row.created_by,
     createdAt: new Date(row.created_at),
@@ -49,17 +46,40 @@ export async function createLesson(lesson: Partial<Lesson>): Promise<Lesson> {
   const db = getDb();
   
   await db.run(`
-    INSERT INTO lessons (id, title, description, audio_url, duration_seconds, created_by)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO lessons (id, title, description, duration_seconds, created_by)
+    VALUES (?, ?, ?, ?, ?)
   `, [
     lesson.id,
     lesson.title,
     lesson.description,
-    lesson.audioUrl,
     lesson.durationSeconds,
     lesson.createdBy
   ]);
 
   const created = await getLessonById(lesson.id!);
   return created!;
+}
+
+export async function updateLesson(id: string, lesson: Partial<Lesson>): Promise<Lesson> {
+  const db = getDb();
+  
+  await db.run(`
+    UPDATE lessons 
+    SET title = ?, description = ?, duration_seconds = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `, [
+    lesson.title,
+    lesson.description,
+    lesson.durationSeconds,
+    id
+  ]);
+
+  const updated = await getLessonById(id);
+  return updated!;
+}
+
+export async function deleteLesson(id: string): Promise<void> {
+  const db = getDb();
+  
+  await db.run('DELETE FROM lessons WHERE id = ?', id);
 }

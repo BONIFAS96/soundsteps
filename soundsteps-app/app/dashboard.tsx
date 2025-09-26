@@ -51,6 +51,9 @@ export default function DashboardScreen() {
                         <Text style={[styles.userName, { color: theme.text }]}>
                             {user?.name || 'Teacher'}
                         </Text>
+                        <Text style={[styles.userRole, { color: theme.primary }]}>
+                            SoundSteps Educator
+                        </Text>
                     </View>
 
                     <TouchableOpacity
@@ -69,7 +72,6 @@ export default function DashboardScreen() {
                                 title="Active Calls"
                                 value={stats?.activeCalls ?? '-'}
                                 subtitle="Currently in progress"
-                                icon="📞"
                             />
                         </View>
                         <View style={styles.statItem}>
@@ -77,7 +79,6 @@ export default function DashboardScreen() {
                                 title="Total Lessons"
                                 value={stats?.totalLessons ?? '-'}
                                 subtitle="Available content"
-                                icon="📚"
                             />
                         </View>
                     </View>
@@ -85,10 +86,9 @@ export default function DashboardScreen() {
                     <View style={styles.statsRow}>
                         <View style={styles.statItem}>
                             <StatWidget
-                                title="Quiz Score"
+                                title="Quiz Performance"
                                 value={stats?.averageQuizScore ? `${stats.averageQuizScore.toFixed(1)}%` : '-'}
-                                subtitle="Average performance"
-                                icon="📊"
+                                subtitle="Average score"
                             />
                         </View>
                         <View style={styles.statItem}>
@@ -96,7 +96,6 @@ export default function DashboardScreen() {
                                 title="Total Users"
                                 value={stats?.totalUsers ?? '-'}
                                 subtitle="Registered learners"
-                                icon="👥"
                             />
                         </View>
                     </View>
@@ -108,11 +107,11 @@ export default function DashboardScreen() {
 
                     <TouchableOpacity
                         style={[styles.actionCard, shadows.medium, { backgroundColor: theme.card }]}
-                        onPress={() => router.push('/lesson/new')}
+                        onPress={() => router.push('/new-lesson')}
                     >
                         <View style={styles.actionContent}>
                             <View style={[styles.actionIcon, { backgroundColor: theme.primary }]}>
-                                <Text style={styles.actionIconText}>+</Text>
+                                <Text style={[styles.actionIconText, { color: theme.background }]}>+</Text>
                             </View>
                             <View style={styles.actionText}>
                                 <Text style={[styles.actionTitle, { color: theme.text }]}>Create Lesson</Text>
@@ -125,16 +124,33 @@ export default function DashboardScreen() {
 
                     <TouchableOpacity
                         style={[styles.actionCard, shadows.medium, { backgroundColor: theme.card }]}
-                        onPress={() => router.push('/lesson')}
+                        onPress={() => router.push('/lessons')}
                     >
                         <View style={styles.actionContent}>
                             <View style={[styles.actionIcon, { backgroundColor: theme.secondary }]}>
-                                <Text style={styles.actionIconText}>📋</Text>
+                                <Text style={[styles.actionIconText, { color: theme.background }]}>≡</Text>
                             </View>
                             <View style={styles.actionText}>
                                 <Text style={[styles.actionTitle, { color: theme.text }]}>Manage Lessons</Text>
                                 <Text style={[styles.actionSubtitle, { color: theme.textSecondary }]}>
                                     View and edit existing lessons
+                                </Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.actionCard, shadows.medium, { backgroundColor: '#4CAF50' }]}
+                        onPress={() => router.push('/sms-demo')}
+                    >
+                        <View style={styles.actionContent}>
+                            <View style={[styles.actionIcon, { backgroundColor: '#2E7D32' }]}>
+                                <Text style={[styles.actionIconText, { color: 'white' }]}>📱</Text>
+                            </View>
+                            <View style={styles.actionText}>
+                                <Text style={[styles.actionTitle, { color: 'white' }]}>SMS Demo</Text>
+                                <Text style={[styles.actionSubtitle, { color: 'rgba(255,255,255,0.9)' }]}>
+                                    Live SMS education demonstration
                                 </Text>
                             </View>
                         </View>
@@ -165,6 +181,11 @@ const createStyles = (theme: any) => StyleSheet.create({
     userName: {
         ...typography.title2,
         fontWeight: '700',
+    },
+    userRole: {
+        ...typography.footnote,
+        fontWeight: '500',
+        marginTop: 2,
     },
     logoutButton: {
         paddingHorizontal: spacing.md,
@@ -214,7 +235,6 @@ const createStyles = (theme: any) => StyleSheet.create({
     },
     actionIconText: {
         fontSize: 20,
-        color: 'white',
         fontWeight: '600',
     },
     actionText: {
@@ -226,5 +246,30 @@ const createStyles = (theme: any) => StyleSheet.create({
     },
     actionSubtitle: {
         ...typography.subheadline,
+    },
+    recentActivity: {
+        paddingHorizontal: spacing.lg,
+        paddingBottom: spacing.lg,
+    },
+    activityCard: {
+        backgroundColor: theme.card,
+        borderRadius: 12,
+        padding: spacing.md,
+        marginTop: spacing.sm,
+    },
+    activityItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: spacing.sm,
+    },
+    activityDot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        marginRight: spacing.md,
+    },
+    activityText: {
+        ...typography.body,
+        flex: 1,
     },
 });

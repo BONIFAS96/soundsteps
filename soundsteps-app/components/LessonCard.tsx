@@ -67,10 +67,13 @@ export const LessonCard: React.FC<LessonCardProps> = ({
                 <View style={styles.footer}>
                     <View style={styles.metadata}>
                         <Text style={[styles.duration, { color: theme.textSecondary }]}>
-                            ⏱️ {formatDuration(lesson.duration)}
+                            Duration: {formatDuration(lesson.duration)}
                         </Text>
                         <Text style={[styles.quizCount, { color: theme.textSecondary }]}>
-                            📝 {lesson.quiz.length} questions
+                            {lesson.quiz.length} questions
+                        </Text>
+                        <Text style={[styles.dateCreated, { color: theme.textSecondary }]}>
+                            Created: {new Date(lesson.createdAt || Date.now()).toLocaleDateString()}
                         </Text>
                     </View>
 
@@ -147,6 +150,10 @@ const styles = StyleSheet.create({
         marginBottom: spacing.xs,
     },
     quizCount: {
+        ...typography.footnote,
+        marginBottom: spacing.xs,
+    },
+    dateCreated: {
         ...typography.footnote,
     },
     actions: {

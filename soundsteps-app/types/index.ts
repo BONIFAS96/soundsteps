@@ -2,6 +2,8 @@ export interface User {
     id: string;
     email: string;
     name: string;
+    phone?: string;
+    school?: string;
     role: 'teacher' | 'admin';
     createdAt: string;
 }
@@ -16,12 +18,20 @@ export interface LoginCredentials {
     password: string;
 }
 
+export interface RegistrationData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    school: string;
+    password: string;
+}
+
 export interface Lesson {
     id: string;
     title: string;
     description: string;
-    audioUrl: string;
-    duration: number; // in seconds
+    durationSeconds: number;
     quiz: QuizQuestion[];
     createdBy: string;
     createdAt: string;
